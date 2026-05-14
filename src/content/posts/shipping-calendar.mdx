@@ -1,0 +1,80 @@
+---
+title: "Notes on shipping a calendar app, slowly"
+excerpt: "A retrospective on Daybreak's 4-month build. How a strict feature list and a stricter sleep schedule got us to v1.0."
+publishedAt: 2025-06-02
+readingTime: "10 min"
+tags: ["product", "design"]
+---
+
+Four months from the first commit to v1.0 of the Daybreak calendar. Nine people, one feature freeze, and exactly one calendar-eats-your-recurring-events incident I won't get into here.
+
+Here's what I'd tell someone starting a similar build today.
+
+## Pick the feature freeze date first
+
+The first thing we did, before any code, was pick the date we'd stop adding features. We picked it backward from when we wanted to ship.
+
+The date was July 15. We picked it on March 12. It never moved.
+
+Picking the freeze date first does one thing very well: every feature conversation, for four months, was implicitly time-budgeted. "Should we add X?" became "should we add X *and lose Y*?" That second framing kills 80% of bad feature requests.
+
+## A strict feature list
+
+We had 27 features at kickoff. We shipped 19 of them.
+
+Of the 8 we cut, I'd say:
+
+- 3 should have been cut on day 1 and we wasted time on them
+- 3 were cut at the right moment
+- 2 we still regret cutting and will add in v1.1
+
+That's a ratio I'm okay with. Better than my last project, where we cut 11 of 34 and most of them were "should have been cut on day 1."
+
+The trick to a strict feature list is *writing the list in user-facing language, not engineering language*. "Recurring events" is a feature. "Postgres CTE-based recurrence expansion" is an implementation detail. The first one survives a list cull; the second one expands to fill the time budget.
+
+## The sleep schedule
+
+The strictest thing we had wasn't the feature list. It was the sleep schedule.
+
+We agreed, as a team, on three rules:
+
+1. No PRs merged after 7pm
+2. No Slack messages between 9pm and 9am
+3. One person on weekend rotation, the rest off entirely
+
+We broke rule 1 maybe four times in four months, each time for a justifiable reason. We broke rule 2 once, in September, during the recurring-events incident. We never broke rule 3.
+
+The result was that nobody on the team burned out. Nobody. That's the only thing I'm proud of about this build that isn't the product itself.
+
+## What slowness gets you
+
+People think "ship slowly" means missing your date. It doesn't have to.
+
+What it means, when it works, is that on the day of the ship:
+
+- The bugs that surface are bugs you knew about
+- The features that work are features you can articulate
+- The team that ships is the team that started
+
+You ship the same product, on the same day, with people who can do it again. That's the deliverable. Not the calendar. The team.
+
+## What we got wrong
+
+A short list:
+
+- **Onboarding.** We shipped with a 4-step onboarding flow that nobody on the team actually used. Three weeks in, we'd cut it to one step. We should have shipped with one step.
+- **Pricing.** We launched at $9/mo because round numbers. After 60 days we moved to $12/mo with zero churn. Should have launched at $12.
+- **The settings screen.** I designed it twice and engineered it three times. It's still bad. v1.1.
+- **Mobile.** We shipped iOS-only because the team was iOS-only. Should have either delayed for web or done web-first. Doing iOS-only in 2025 left maybe 30% of our target market unable to even try the thing.
+
+## What we got right
+
+The release notes.
+
+We shipped Daybreak with a release notes page that read like a novel. Every feature had a sentence about *why* it was there. The first user blog post about Daybreak quoted three of those sentences verbatim.
+
+Spending two days on the release notes was, dollar-for-dollar, the single highest-ROI thing we did. Far higher than any marketing dollar. The release notes are still, six months later, the page new users mention when they say they decided to try us.
+
+So: ship slowly, write the release notes, and don't break rule 3 even when it's tempting.
+
+The calendar will be fine.

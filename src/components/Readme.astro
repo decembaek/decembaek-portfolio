@@ -1,0 +1,36 @@
+---
+import SectionHeader from "./SectionHeader.astro";
+---
+<section id="readme" class="section section--readme">
+  <SectionHeader idx={1} file="README.md" sub="// the bit recruiters actually read" />
+  <div class="readme-card">
+    <div class="readme-badges">
+      <span class="badge"><b>build</b><i>passing</i></span>
+      <span class="badge"><b>coverage</b><i>~74%</i></span>
+      <span class="badge"><b>years-shipping</b><i>6+</i></span>
+      <span class="badge"><b>last commit</b><i>today</i></span>
+      <span class="badge"><b>license</b><i>be-kind</i></span>
+    </div>
+    <h3># about</h3>
+    <p>
+      Hi, I'm <b>Decembaek</b> (백12월). I design and engineer interface software — mostly the kind that
+      sits between you and a database, and tries very hard not to embarrass either of you.
+    </p>
+    <p>
+      I started as a designer who learned to code so my prototypes would stop lying to PMs, and slowly
+      became the kind of engineer who refuses to ship a component without a spacing audit. I've worked
+      on calendars, design systems, internal tooling, and one terrible cron job that I'd like to forget.
+    </p>
+    <h3># installation</h3>
+    <pre class="code">$ git clone hi@decembaek.dev
+$ cd decembaek && npm run coffee
+✔ ready in 12.3s</pre>
+    <h3># philosophy</h3>
+    <ul class="philos">
+      <li>small surface area, large craft.</li>
+      <li>the worst tool is the one with a tutorial.</li>
+      <li>if a button needs a tooltip, the button is wrong.</li>
+      <li>write the README before the framework.</li>
+    </ul>
+  </div>
+</section>

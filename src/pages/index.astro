@@ -1,0 +1,35 @@
+---
+export const prerender = true;
+
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Statusbar from "@/components/Statusbar";
+import Nav from "@/components/Nav.astro";
+import Hero from "@/components/Hero.astro";
+import Readme from "@/components/Readme.astro";
+import Changelog from "@/components/Changelog.astro";
+import ProjectsSection from "@/components/ProjectsSection.astro";
+import PackageJson from "@/components/PackageJson.astro";
+import Now from "@/components/Now.astro";
+import ContactSection from "@/components/ContactSection.astro";
+import Footer from "@/components/Footer.astro";
+import Terminal from "@/components/Terminal";
+import ChatBot from "@/components/ChatBot";
+---
+<BaseLayout>
+  <div class="app">
+    <Statusbar client:load />
+    <Nav />
+    <main class="page" id="top">
+      <Hero />
+      <Readme />
+      <Changelog />
+      <ProjectsSection />
+      <PackageJson />
+      <Now />
+      <ContactSection />
+      <Footer />
+    </main>
+    <Terminal client:idle />
+    <ChatBot client:idle />
+  </div>
+</BaseLayout>

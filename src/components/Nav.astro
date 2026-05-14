@@ -1,0 +1,17 @@
+---
+const path = Astro.url.pathname;
+const onHome = path === "/" || path === "";
+const link = (hash: string) => (onHome ? `#${hash}` : `/#${hash}`);
+---
+<nav class="nav">
+  <a class="nav__brand" href="/">decembaek<span style="color: var(--accent);">.</span>dev</a>
+  <ul class="nav__links">
+    <li><a href={link("readme")}>readme</a></li>
+    <li><a href={link("changelog")}>changelog</a></li>
+    <li><a href={link("projects")}>projects</a></li>
+    <li><a href={link("skills")}>package.json</a></li>
+    <li><a href="/writing/">writing</a></li>
+    <li><a href={link("now")}>/now</a></li>
+    <li><a href={link("contact")} class="nav__cta">./contact</a></li>
+  </ul>
+</nav>

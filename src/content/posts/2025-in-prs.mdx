@@ -1,0 +1,70 @@
+---
+title: "My 2025 in PRs (a yearly retrospective)"
+excerpt: "612 commits, 4 promotions I didn't take, 1 sabbatical. What I shipped, what I didn't, and what I learned about pacing."
+publishedAt: 2025-12-31
+readingTime: "12 min"
+tags: ["retro", "year-in-review"]
+---
+
+Every December I sit down and pull my year of pull requests into a single CSV. Title, opened, merged, repo, additions, deletions, reviewers, time to merge.
+
+I do this partly because it's the closest thing I have to a journal. The PRs remember what I was working on better than I do.
+
+Here's what 2025 looked like.
+
+## The numbers
+
+- 612 commits across 14 repos
+- 187 PRs opened, 173 merged, 14 closed without merging
+- Average time to merge: 2.4 days
+- Longest PR I owned: 6,400 lines (don't, never again)
+- Shortest merged PR: 1 character (added a comma to a config)
+- Most reviewed reviewer: my coworker S, who reviewed 41 of my PRs and never once approved one without a comment
+
+## What I shipped
+
+The big one was **Daybreak's v1.0** in October. I'd been chipping at it for fourteen months, mostly on weekends, until the team decided in April to make it the only thing. From April to October it was nine people, no meetings before 11am, one feature freeze, and one extremely tense week in September where the calendar lost a user's recurring events. (We fixed it. They forgave us. Mostly.)
+
+I also shipped:
+
+- **The migration off our 2019 design system** (~140 components, took 6 weeks of nights, was worth every one)
+- **A new internal CLI** that nobody asked for and 22 people now use
+- **Three blog posts**, including this one (counts as shipping)
+- **One open-source release** of a tool that I thought was a 3-day project and turned into a 3-month project
+
+## What I didn't ship
+
+- The redesign of the marketing site (started May, abandoned August)
+- A book I was supposed to co-write (got 12k words in)
+- The migration from Postgres 14 to 17 (we're still on 14, it's fine, I lied)
+- A Rust rewrite of the CI dashboard (started, abandoned, will probably restart in 2026)
+
+The not-shipping is, I think, more honest than the shipping. The shipped things look intentional. The not-shipped things show you where my attention actually was.
+
+## What I learned about pacing
+
+The single biggest thing I learned in 2025 was this: **the work I'm proud of came in the months I shipped one thing.**
+
+Months I shipped one thing: April (Daybreak design refresh), September (the calendar incident postmortem), November (the design-system migration).
+
+Months I shipped many things: I can't really name them. I just looked at git logs that say I did a lot, and I don't remember most of it.
+
+The lesson, which I'll forget by March: shipping one big thing per month is, for me, the right cadence. Anything more and I'm context-switching. Anything less and I'm dawdling.
+
+## The four promotions
+
+Four times in 2025 I had a conversation with a manager that ended with "we'd promote you to X if you wanted." Twice it was a staff engineer track. Once it was a design director role at a different company. Once it was a co-founder slot at a friend's startup.
+
+I said no to all four. I don't have a clean answer for why. The closest I have is: the work I'm doing right now — being the person on the team who reads every PR and writes the docs nobody else will — is the work I'd be giving up. And I'm not sure I want to give it up yet.
+
+I might in 2026. Ask me in December.
+
+## What 2026 looks like
+
+Three things I want to do:
+
+1. **Ship slowly.** Pick one project per quarter. Resist the urge to optimize.
+2. **Write more, code less.** Not because writing is more valuable, but because writing is the thing I'm worst at in a way that compounds.
+3. **Sabbatical, again.** July if I can swing it. Jeju again, or Iceland for the first time.
+
+That's it. That's the year. See you in 2026.

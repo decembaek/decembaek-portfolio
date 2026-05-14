@@ -1,0 +1,16 @@
+---
+interface Props {
+  idx: number;
+  file: string;
+  sub?: string;
+}
+const { idx, file, sub } = Astro.props;
+---
+<header class="section-head">
+  <div class="section-head__line">
+    <span class="section-head__idx">§ {String(idx).padStart(2, "0")}</span>
+    <span class="section-head__file">{file}</span>
+    <span class="section-head__rule"></span>
+  </div>
+  {sub && <p class="section-head__sub">{sub}</p>}
+</header>

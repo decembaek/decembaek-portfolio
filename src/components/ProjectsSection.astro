@@ -1,0 +1,12 @@
+---
+import SectionHeader from "./SectionHeader.astro";
+import Projects from "./Projects";
+---
+<section id="projects" class="section section--projects">
+  <SectionHeader
+    idx={3}
+    file="./projects/"
+    sub="// $ ls -la ./projects --filter=<tag>   # click a chip to scope"
+  />
+  <Projects client:load />
+</section>

@@ -1,0 +1,38 @@
+---
+import SectionHeader from "./SectionHeader.astro";
+import Tag from "./Tag.astro";
+import { CHANGELOG } from "@/data/changelog";
+---
+<section id="changelog" class="section section--changelog">
+  <SectionHeader
+    idx={2}
+    file="CHANGELOG.md"
+    sub="// reverse-chronological, like git log --oneline but with feelings"
+  />
+  <ol class="cl">
+    {CHANGELOG.map((entry, i) => (
+      <li class={`cl__entry ${entry.status === "current" ? "cl__entry--current" : ""}`}>
+        <div class="cl__rail">
+          <span class="cl__dot"></span>
+          {i < CHANGELOG.length - 1 && <span class="cl__line"></span>}
+        </div>
+        <div class="cl__body">
+          <div class="cl__head">
+            <h4 class="cl__ver">## [{entry.version}]</h4>
+            <span class="cl__date">— {entry.date}</span>
+            {entry.status === "current" && <Tag kind="ok">current</Tag>}
+          </div>
+          <p class="cl__title">{entry.title}</p>
+          <ul class="cl__bullets">
+            {entry.bullets.map((b) => (
+              <li class={`cl__bullet cl__bullet--${b.type}`}>
+                <span class="cl__btype">{b.type}</span>
+                <span>{b.text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </li>
+    ))}
+  </ol>
+</section>

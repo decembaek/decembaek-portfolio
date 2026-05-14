@@ -1,0 +1,53 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Nav from "@/components/Nav.astro";
+import Footer from "@/components/Footer.astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const posts = await getCollection("posts", ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+type Props = { post: CollectionEntry<"posts"> };
+const { post } = Astro.props;
+const { Content } = await post.render();
+const dateStr = post.data.publishedAt.toISOString().slice(0, 10);
+---
+<BaseLayout
+  title={`${post.data.title} · decembaek`}
+  description={post.data.excerpt}
+  ogType="article"
+  publishedTime={post.data.publishedAt.toISOString()}
+>
+  <div class="app">
+    <Nav />
+    <article class="post-wrap" data-pagefind-body>
+      <a class="post-back" href="/writing/">← back to /writing/</a>
+      <header class="post-head">
+        <div class="post-meta">
+          <time datetime={post.data.publishedAt.toISOString()}><b>{dateStr}</b></time>
+          <span>·</span>
+          <span>{post.data.readingTime}</span>
+          <span>·</span>
+          <span>{post.data.tags.map((t) => `#${t}`).join(" ")}</span>
+        </div>
+        <h1 class="post-title">{post.data.title}</h1>
+        <p class="post-excerpt">{post.data.excerpt}</p>
+      </header>
+      <div class="post-body">
+        <Content />
+      </div>
+      <footer class="post-foot">
+        <a href="/writing/">← all posts</a>
+        <a href="/rss.xml">subscribe (rss) →</a>
+      </footer>
+    </article>
+    <Footer />
+  </div>
+</BaseLayout>

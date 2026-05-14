@@ -1,0 +1,7 @@
+---
+interface Props {
+  kind: "ok" | "live" | "muted";
+}
+const { kind } = Astro.props;
+---
+<span class={`tag tag-${kind}`}><slot /></span>

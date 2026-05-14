@@ -1,0 +1,94 @@
+---
+import Cursor from "./Cursor.astro";
+import Tag from "./Tag.astro";
+import { Image } from "astro:assets";
+import { SITE } from "@/data/site";
+
+// Drop a real portrait into src/assets/portrait.{jpg,jpeg,png,webp,avif} to use
+// it. Otherwise the polaroid shows a placeholder caption. import.meta.glob is
+// static-analyzable so it doesn't blow up at build time when the file is absent.
+const portraits = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/portrait.{jpg,jpeg,png,webp,avif}",
+  { eager: true },
+);
+const portrait = Object.values(portraits)[0]?.default ?? null;
+---
+<section class="hero">
+  <div class="hero__meta">
+    <span><Tag kind="ok">● deployed</Tag></span>
+    <span class="hero__meta-sep">/</span>
+    <span id="hero-uptime">uptime —</span>
+    <span class="hero__meta-sep">/</span>
+    <span>{SITE.location}</span>
+    <span class="hero__meta-sep">/</span>
+    <span>last commit · just now</span>
+  </div>
+
+  <div class="hero__layout">
+    <div class="hero__col-text">
+      <h1 class="hero__title">
+        <span class="hero__hand">Decembaek</span>
+        <span class="hero__sub"><em>release notes of</em> a developer<Cursor /></span>
+      </h1>
+
+      <div class="hero__semver">
+        <span class="hero__semver-label">currently shipping</span>
+        <span class="hero__semver-num">{SITE.version}</span>
+        <span class="hero__semver-note">— see <a href="#changelog">/changelog</a></span>
+      </div>
+
+      <p class="hero__lede">
+        I'm an engineer who used to be a designer, or maybe the other way around. I ship small, fast,
+        legible software — calendars, tools for teams, and the occasional dictionary of underused Korean verbs.
+      </p>
+
+      <div class="hero__hint">
+        <kbd>?</kbd> for terminal · <kbd>↓</kbd> to keep reading
+      </div>
+    </div>
+
+    <aside class="hero__col-photo">
+      <div class="photo-frame">
+        <div class="photo-frame__tape photo-frame__tape--tl"></div>
+        <div class="photo-frame__tape photo-frame__tape--br"></div>
+        <div class="photo-frame__img-wrap">
+          {portrait ? (
+            <Image src={portrait} alt="portrait" widths={[280, 560]} sizes="280px" />
+          ) : (
+            <div class="photo-frame__placeholder">
+              drop src/assets/portrait.jpg →
+            </div>
+          )}
+        </div>
+        <div class="photo-frame__caption">
+          <span class="photo-frame__filename">portrait.jpg</span>
+          <span class="photo-frame__exif">f/2.8 · 1/125 · ISO 200</span>
+        </div>
+      </div>
+      <div class="photo-frame__note">
+        <span>// fig. 01 — the maintainer, photographed in their natural habitat (a tab they forgot was open).</span>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<script is:inline>
+  (function () {
+    const start = new Date("2020-01-13T09:00:00+09:00").getTime();
+    const el = document.getElementById("hero-uptime");
+    if (!el) return;
+    function tick() {
+      const diff = Date.now() - start;
+      const s = Math.floor(diff / 1000);
+      const days = Math.floor(s / 86400);
+      const y = Math.floor(days / 365);
+      const d = days - y * 365;
+      const h = Math.floor((s % 86400) / 3600);
+      const m = Math.floor((s % 3600) / 60);
+      const ss = s % 60;
+      el.textContent = `uptime ${y}y ${String(d).padStart(3, "0")}d ${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(ss).padStart(2, "0")}`;
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
+</script>

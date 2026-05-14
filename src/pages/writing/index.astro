@@ -1,0 +1,48 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Nav from "@/components/Nav.astro";
+import Footer from "@/components/Footer.astro";
+import BlogList, { type BlogItem } from "@/components/BlogList";
+import Search from "@/components/Search";
+import { getCollection } from "astro:content";
+
+const all = await getCollection("posts", ({ data }) => !data.draft);
+
+const items: BlogItem[] = all
+  .map((p) => ({
+    slug: p.slug,
+    title: p.data.title,
+    date: p.data.publishedAt.toISOString().slice(0, 10),
+    read: p.data.readingTime,
+    excerpt: p.data.excerpt,
+    tags: p.data.tags,
+    pinned: p.data.pinned,
+  }))
+  .sort((a, b) => {
+    if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+    return b.date.localeCompare(a.date);
+  });
+---
+<BaseLayout
+  title="writing · decembaek"
+  description="Essays about software craft, design systems, and the strange middle between engineering and design."
+>
+  <div class="app">
+    <Nav />
+    <main class="page">
+      <section class="section">
+        <header class="section-head">
+          <div class="section-head__line">
+            <span class="section-head__idx">§ 06</span>
+            <span class="section-head__file">./writing/</span>
+            <span class="section-head__rule"></span>
+          </div>
+          <p class="section-head__sub">// essays, mostly written on the subway. ~1/month.</p>
+        </header>
+        <Search client:idle />
+        <BlogList client:load posts={items} />
+      </section>
+    </main>
+    <Footer />
+  </div>
+</BaseLayout>

@@ -1,0 +1,78 @@
+---
+title: "Why your design system is a Trello board"
+excerpt: "A design system without a queue is just a github org. A note on why backlog hygiene is the actual deliverable."
+publishedAt: 2026-04-22
+readingTime: "8 min"
+tags: ["design-systems", "craft"]
+pinned: true
+---
+
+People talk about design systems like they're a library. Components, tokens, docs. Shipped, versioned, done.
+
+That's not what I've watched ship.
+
+## The library is the easy part
+
+Buttons aren't hard. Colors aren't hard. Even the spacing scale, after three meetings, isn't really hard.
+
+What's hard is the queue.
+
+What's hard is the **request that came in on Slack three weeks ago for a "slightly bigger checkbox"** that you forgot to acknowledge — which got built locally — which got copied into two other features — and which is now load-bearing in a checkout flow nobody told you about.
+
+A design system without a queue is just a github org with opinions.
+
+## What I'd write instead
+
+If I were starting again — and I have, twice — I'd put this on the wall before I cut a single Figma component:
+
+> The deliverable is not the library. The deliverable is the **process by which the library stays trustworthy**.
+
+That means:
+
+- A public intake form (or board, or label) that anyone can drop a request into
+- A first response within 48 hours, even if the response is "no, here's why"
+- A weekly cadence where you pick up the queue, ship one thing, and write about it
+- A changelog that humans actually read
+
+Without those four, you have a museum.
+
+## The Trello part
+
+I keep coming back to Trello specifically because the metaphor matters. Not Jira, not Linear, not whatever else is fashionable this quarter. *Trello* — because it's a board, it's flat, and you can see the whole thing at once.
+
+Every column is a state your design system can be in:
+
+- `inbox` — someone asked for it
+- `triaged` — we know what it is
+- `next` — picked up this sprint
+- `shipped` — in the library
+- `wontfix` — closed with a written reason
+
+Sounds obvious. Almost nobody does it.
+
+When I joined the Daybreak team, our "design system" was a Figma file and 14 abandoned Slack threads. The first thing I did wasn't to redesign the buttons. It was to make the board.
+
+The buttons came two months later.
+
+## What I'd skip
+
+I'd skip these, in order of how much time they'd waste:
+
+1. Picking a name. Just call it `ds`. Rename it in v2 if anyone cares (nobody will).
+2. Setting up Storybook in week one. You don't have anything to show yet.
+3. Writing the "principles" page before you have three components. Principles emerge.
+4. Designing for theming before someone has actually asked for theming.
+
+There's a version of this advice that sounds like "ship fast." That's not what I mean. I mean *write the README before the framework*.
+
+## So what does this look like
+
+Two weeks into the next system, you should be able to point to:
+
+- A board (Trello, GitHub Projects, doesn't matter) with at least 12 cards
+- A single shipped component, documented, with a person whose name is on it
+- One written "no" — a closed request with a clear reason
+
+If you have those three, you have a design system. If you have a 40-component Figma library and none of those three, you have a museum.
+
+The museum will outlast you. Just don't confuse it with the system.

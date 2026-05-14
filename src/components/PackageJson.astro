@@ -1,0 +1,23 @@
+---
+import SectionHeader from "./SectionHeader.astro";
+import { DEPS, DEV_DEPS } from "@/data/deps";
+---
+<section id="skills" class="section section--pkg">
+  <SectionHeader idx={4} file="package.json" sub="// dependencies, with very honest semver" />
+  <pre class="pkg"><span class="pkg-line"><span class="pkg-brace">&#123;</span></span>
+<span class="pkg-line">  <span class="pkg-key">"name"</span>: <span class="pkg-str">"decembaek"</span>,</span>
+<span class="pkg-line">  <span class="pkg-key">"version"</span>: <span class="pkg-str">"2026.5.0"</span>,</span>
+<span class="pkg-line">  <span class="pkg-key">"description"</span>: <span class="pkg-str">"an engineer who keeps writing readmes"</span>,</span>
+<span class="pkg-line">  <span class="pkg-key">"license"</span>: <span class="pkg-str">"be-kind"</span>,</span>
+<span class="pkg-line">  <span class="pkg-key">"dependencies"</span>: <span class="pkg-brace">&#123;</span></span>
+{DEPS.map((d, i) => (
+  <span class="pkg-line">    <span class="pkg-key">"{d.name}"</span>: <span class="pkg-str">"{d.v}"</span>{i < DEPS.length - 1 ? "," : ""} <span class="pkg-cmt">{d.note}</span></span>
+))}
+<span class="pkg-line">  <span class="pkg-brace">&#125;</span>,</span>
+<span class="pkg-line">  <span class="pkg-key">"devDependencies"</span>: <span class="pkg-brace">&#123;</span></span>
+{DEV_DEPS.map((d, i) => (
+  <span class="pkg-line">    <span class="pkg-key">"{d.name}"</span>: <span class="pkg-str">"{d.v}"</span>{i < DEV_DEPS.length - 1 ? "," : ""} <span class="pkg-cmt">{d.note}</span></span>
+))}
+<span class="pkg-line">  <span class="pkg-brace">&#125;</span></span>
+<span class="pkg-line"><span class="pkg-brace">&#125;</span></span></pre>
+</section>
