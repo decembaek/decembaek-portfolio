@@ -1424,3 +1424,123 @@ kbd {
   color: var(--accent);
   transform: translateX(3px);
 }
+
+/* ============ mobile polish — refined sweep ============
+   Specific fixes for the 360–560px range where things were getting cramped.
+   Older breakpoints stay; these are additive overrides. */
+
+@media (max-width: 720px) {
+  /* Status bar: kill the keyboard-hint push on narrow screens — it's noise. */
+  .statusbar__push {
+    display: none;
+  }
+  /* Crumbs on detail pages: smaller and allow ellipsis. */
+  .crumbs {
+    font-size: 11px;
+    gap: 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+  /* Detail-page hero meta: tags chunk can get long, let it wrap properly. */
+  .dp-hero__meta {
+    row-gap: 6px;
+    column-gap: 8px;
+    font-size: 11px;
+  }
+  .dp-hero__meta .dp-hero__sep { display: none; }
+}
+
+@media (max-width: 560px) {
+  /* Tighter page side padding on phones */
+  .page { padding: 0 16px 60px; }
+  .nav { padding: 18px 16px; }
+
+  /* Homepage hero title — was clamping at 72px (too big at 320–375px) */
+  .hero__title { font-size: clamp(54px, 14vw, 72px); }
+  .hero__sub   { font-size: clamp(22px, 6vw, 32px); }
+  .hero__lede  { font-size: 16px; }
+
+  /* Photo frame: stop forcing 280px on tiny screens */
+  .hero__col-photo { max-width: 100%; }
+
+  /* Project detail title scales down too */
+  .dp-hero__title { font-size: clamp(48px, 14vw, 72px); }
+  .dp-hero__tag   { font-size: 18px; margin-bottom: 24px; }
+
+  /* Live URL button — let it stretch, truncate long URLs cleanly */
+  .dp-hero__live-btn {
+    width: 100%;
+    padding: 10px 12px;
+    gap: 8px;
+  }
+  .dp-hero__live-url {
+    flex: 1;
+    min-width: 0;
+    font-size: 12.5px;
+  }
+
+  /* GitHub repo pills: long paths break to next line instead of overflowing */
+  .dp-hero__repo {
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+  .dp-hero__repo-path {
+    font-size: 11px;
+    word-break: break-all;
+  }
+
+  /* Decisions: align number above title on mobile */
+  .dp-d__num { font-size: 12px; }
+  .dp-d__title { font-size: 22px; }
+
+  /* Metrics number was 56px — tight on phones */
+  .dp-metric__v { font-size: 44px; }
+
+  /* Section spacing */
+  .dp-section { padding: 40px 0 16px; }
+
+  /* Now cards a touch tighter */
+  .now-card { padding: 14px; min-height: auto; }
+  .now-card p { font-size: 15px; }
+
+  /* Contact heading scales */
+  .contact-h { font-size: 36px; }
+  .contact-p { font-size: 16px; }
+
+  /* Readme card padding */
+  .readme-card { padding: 22px 18px; }
+
+  /* Chat modal — chat-msg ref cards a touch tighter */
+  .chat-msg__ref { padding: 6px 10px; font-size: 12px; }
+  .chat-msg__refs-label { font-size: 10px; }
+
+  /* Changelog dots can stay, but bullets should wrap */
+  .cl__bullet { grid-template-columns: 68px 1fr; gap: 8px; }
+  .cl__btype { font-size: 9px; padding: 1px 4px; }
+
+  /* Footer row stacks */
+  .footer__row { flex-direction: column; gap: 4px; }
+}
+
+@media (max-width: 380px) {
+  /* Very narrow phones (iPhone SE 1st gen etc.) — squeeze a bit more */
+  .page { padding: 0 12px 48px; }
+  .nav  { padding: 14px 12px; }
+  .nav__brand { font-size: 22px; }
+
+  .hero__title    { font-size: 48px; line-height: 0.95; }
+  .hero__sub      { font-size: 22px; }
+  .dp-hero__title { font-size: 44px; }
+
+  .statusbar { padding: 5px 12px; font-size: 10px; gap: 6px; }
+
+  /* Facts strip stacks vertically on tiny screens */
+  .dp-facts ul { grid-template-columns: 1fr; }
+
+  /* Tighter project card */
+  .proj { padding: 18px; }
+  .proj__name { font-size: 26px; }
+  .proj__tag  { font-size: 15px; }
+}
