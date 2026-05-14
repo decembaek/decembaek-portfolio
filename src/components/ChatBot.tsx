@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 type Msg = { role: "you" | "bot"; text: string };
 
@@ -7,6 +7,65 @@ const SUGGESTIONS = [
   "AI 에이전트는 어떤 거 작업 중?",
   "스택이 어떻게 돼요?",
 ];
+
+// Auto-link URLs inside bot replies. We match:
+//   - external https? URLs
+//   - same-origin paths like /projects/<slug>/ or /writing/...
+// Trailing punctuation (. , ; : ! ? ) ]) is stripped from the matched URL
+// and pushed back as text so sentences read naturally.
+const URL_RE = /(https?:\/\/\S+|\/(?:projects|writing|now|hi)\/?[a-z0-9-]*\/?)/g;
+const TRAILING_PUNCT = /[.,;:!?)\]"']+$/;
+
+type Part = { kind: "text" | "link"; value: string; href?: string };
+
+function splitWithLinks(text: string): Part[] {
+  const parts: Part[] = [];
+  let lastIdx = 0;
+  let m: RegExpExecArray | null;
+  URL_RE.lastIndex = 0;
+  while ((m = URL_RE.exec(text)) !== null) {
+    if (m.index > lastIdx) {
+      parts.push({ kind: "text", value: text.slice(lastIdx, m.index) });
+    }
+    let url = m[0];
+    const trail = url.match(TRAILING_PUNCT);
+    let tail = "";
+    if (trail) {
+      tail = trail[0];
+      url = url.slice(0, -tail.length);
+    }
+    if (url) parts.push({ kind: "link", value: url, href: url });
+    if (tail) parts.push({ kind: "text", value: tail });
+    lastIdx = m.index + m[0].length;
+  }
+  if (lastIdx < text.length) parts.push({ kind: "text", value: text.slice(lastIdx) });
+  return parts;
+}
+
+function MessageBody({ text, role }: { text: string; role: "you" | "bot" }) {
+  // Don't auto-link the user's own messages — only the bot's.
+  if (role === "you") return <>{text}</>;
+  const parts = splitWithLinks(text);
+  return (
+    <>
+      {parts.map((p, i) => {
+        if (p.kind === "text") return <Fragment key={i}>{p.value}</Fragment>;
+        const external = p.href!.startsWith("http");
+        return (
+          <a
+            key={i}
+            className="chat-msg__link"
+            href={p.href}
+            target={external ? "_blank" : "_self"}
+            rel={external ? "noopener noreferrer" : undefined}
+          >
+            {p.value}
+          </a>
+        );
+      })}
+    </>
+  );
+}
 
 export default function ChatBot() {
   const [open, setOpen] = useState(false);
@@ -113,11 +172,13 @@ export default function ChatBot() {
               <div key={i} className={`chat-msg chat-msg--${m.role}`}>
                 <span className="chat-msg__who">{m.role === "you" ? "~ ❯" : "➜"}</span>
                 <span className="chat-msg__text">
-                  {m.text || (busy && i === msgs.length - 1 ? (
+                  {m.text ? (
+                    <MessageBody text={m.text} role={m.role} />
+                  ) : busy && i === msgs.length - 1 ? (
                     <span className="chat-msg__typing">
                       <i /><i /><i />
                     </span>
-                  ) : null)}
+                  ) : null}
                 </span>
               </div>
             ))}

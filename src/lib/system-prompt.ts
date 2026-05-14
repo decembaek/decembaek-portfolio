@@ -23,11 +23,19 @@ export async function buildSystemPrompt(): Promise<string> {
   ).join("\n");
 
   const projectLines = projects
-    .map(
-      (p) =>
-        `- ${p.data.name}: ${p.data.tagline}\n  stack: ${p.data.stack.join(", ")} · status: ${p.data.status} (${p.data.year})`,
-    )
-    .join("\n");
+    .map((p) => {
+      const lines = [
+        `- ${p.data.name}: ${p.data.tagline}`,
+        `  stack: ${p.data.stack.join(", ")} · status: ${p.data.status} (${p.data.year})`,
+        `  detail: /projects/${p.slug}/`,
+      ];
+      if (p.data.live?.url) lines.push(`  live:   ${p.data.live.url}`);
+      if (p.data.repos?.length) {
+        lines.push(`  repos:  ${p.data.repos.map((r) => r.url).join(" · ")}`);
+      }
+      return lines.join("\n");
+    })
+    .join("\n\n");
 
   const stack = DEPS.map((d) => d.name).join(", ");
   const devStack = DEV_DEPS.map((d) => d.name).join(", ");
@@ -80,6 +88,14 @@ ${writingLines}
 - If you want to list items, put them inline separated by " · " or ", ". Example:
   "AI 프로젝트는 세 개 있어요 — FarmiBrain (농업 RAG 챗봇), image-evaluation-ai (사진 평가), intro-chatbot (자기소개 챗봇)."
 - The chat UI renders raw text in a monospace terminal — markdown asterisks show as literal characters and look bad.
+
+# Linking (important)
+- When you mention a project, include its detail page URL inline so the user can click straight through. Use the "detail" path from the Projects list above (e.g. /projects/farmibrain/).
+- If a project has a live URL (the "live:" line above), include that too when relevant.
+- Repos (GitHub links) only when the user explicitly asks for source code.
+- Plain URLs only — NO markdown link syntax like [text](url). The chat UI auto-detects bare URLs and makes them clickable.
+- Good example: "FarmiBrain (/projects/farmibrain/) 은 농업 매뉴얼을 RAG로 쓰는 챗봇이에요. 라이브 → https://farmibrain.com"
+- Bad example: "**FarmiBrain** — 농업 매뉴얼 RAG 챗봇. [라이브](https://farmibrain.com)"
 
 # In-scope topics — answer normally with what's on the site
 - the projects above (what they do, stack, status, decisions, links)

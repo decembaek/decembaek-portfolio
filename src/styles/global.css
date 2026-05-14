@@ -1363,3 +1363,16 @@ kbd {
   font-style: italic;
   color: var(--accent);
 }
+
+/* ------------ chat: auto-linked URLs in bot replies ------------ */
+.chat-msg__link {
+  color: var(--accent);
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  padding-bottom: 1px;
+  text-decoration: none;
+  word-break: break-all;
+  transition: border-color .15s;
+}
+.chat-msg__link:hover {
+  border-bottom-color: var(--accent);
+}
