@@ -50,6 +50,13 @@ export async function POST(context: APIContext) {
     max_tokens: 256,
   })) as unknown as ReadableStream<Uint8Array>;
 
+  // Workers AI streams SSE. Different model families use different event
+  // shapes:
+  //   - CF native    : { "response": "<token>", "p": "..." }
+  //   - OpenAI-compat: { "choices": [{ "delta": { "content": "<token>" } }] }
+  //                    (e.g. @cf/openai/gpt-oss-120b)
+  // We handle both — gpt-oss emits reasoning into a separate field which we
+  // intentionally skip so the user only sees the final answer.
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       const reader = upstream.getReader();
@@ -69,8 +76,15 @@ export async function POST(context: APIContext) {
             const payload = trimmed.slice(5).trim();
             if (!payload || payload === "[DONE]") continue;
             try {
-              const evt = JSON.parse(payload) as { response?: string };
-              if (evt.response) controller.enqueue(encoder.encode(evt.response));
+              const evt = JSON.parse(payload) as {
+                response?: string;
+                choices?: Array<{ delta?: { content?: string } }>;
+              };
+              const token =
+                (typeof evt.response === "string" && evt.response) ||
+                evt.choices?.[0]?.delta?.content ||
+                "";
+              if (token) controller.enqueue(encoder.encode(token));
             } catch {
               // skip malformed event
             }
