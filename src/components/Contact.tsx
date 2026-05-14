@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { SITE } from "@/data/site";
 
-const CURL = `curl -X POST https://decembaek.dev/hi \\
+const CURL = `curl -X POST https://decembaek.com/hi \\
   -H "Content-Type: text/human" \\
   -d '{ "from": "you", "topic": "anything, really" }'`;
 
@@ -34,12 +34,8 @@ export default function Contact() {
             <a href={SITE.github}>github.com/decembaek</a>
           </li>
           <li>
-            <span className="contact-k">read.cv</span>
-            <a href={SITE.readcv}>read.cv/decembaek</a>
-          </li>
-          <li>
             <span className="contact-k">rss</span>
-            <a href="/rss.xml">decembaek.dev/rss.xml</a>
+            <a href="/rss.xml">decembaek.com/rss.xml</a>
           </li>
         </ul>
       </div>

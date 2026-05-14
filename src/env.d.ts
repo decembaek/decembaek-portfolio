@@ -4,7 +4,7 @@
 type Runtime = import("@astrojs/cloudflare").Runtime<Env>;
 
 interface Env {
-  ANTHROPIC_API_KEY: string;
+  AI: Ai;
   ASSETS: Fetcher;
 }
 

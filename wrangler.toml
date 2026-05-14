@@ -5,8 +5,10 @@ main = "./dist/_worker.js/index.js"
 
 assets = { directory = "./dist", binding = "ASSETS" }
 
-# Secrets (set via `wrangler secret put ANTHROPIC_API_KEY`):
-#   ANTHROPIC_API_KEY — required for /api/chat
+# Workers AI binding — no API key needed, uses the CF account's quota.
+# Free tier: ~10k neurons/day, plenty for a personal chatbot.
+[ai]
+binding = "AI"
 
 [observability]
 enabled = true

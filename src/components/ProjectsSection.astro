@@ -1,6 +1,28 @@
 ---
 import SectionHeader from "./SectionHeader.astro";
-import Projects from "./Projects";
+import Projects, { type ProjectItem } from "./Projects";
+import { getCollection } from "astro:content";
+
+const all = await getCollection("projects", ({ data }) => !data.draft);
+const items: ProjectItem[] = all
+  .map((p) => ({
+    slug: p.slug,
+    name: p.data.name,
+    tagline: p.data.tagline,
+    blurb: p.data.blurb,
+    role: p.data.role,
+    stack: p.data.stack,
+    tags: p.data.tags,
+    metric: p.data.metric,
+    status: p.data.status,
+    year: p.data.year,
+  }))
+  .sort((a, b) => {
+    // newest first by publishedAt — preserve the same order as detail-page navigation
+    const aDate = all.find((x) => x.slug === a.slug)!.data.publishedAt.valueOf();
+    const bDate = all.find((x) => x.slug === b.slug)!.data.publishedAt.valueOf();
+    return bDate - aDate;
+  });
 ---
 <section id="projects" class="section section--projects">
   <SectionHeader
@@ -8,5 +30,5 @@ import Projects from "./Projects";
     file="./projects/"
     sub="// $ ls -la ./projects --filter=<tag>   # click a chip to scope"
   />
-  <Projects client:load />
+  <Projects client:load items={items} />
 </section>

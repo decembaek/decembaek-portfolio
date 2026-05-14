@@ -4,7 +4,7 @@ import react from "@astrojs/react";
 import mdx from "@astrojs/mdx";
 
 export default defineConfig({
-  site: "https://decembaek-portfolio.workers.dev",
+  site: "https://decembaek.com",
   output: "hybrid",
   adapter: cloudflare({
     platformProxy: { enabled: true },

@@ -1,0 +1,50 @@
+---
+name: "FarmiBrain"
+tagline: "농장을 대신 생각하는 AI — 농업 매뉴얼 RAG 기반 챗봇."
+version: "v1.0"
+status: shipped
+year: "2026"
+publishedAt: 2026-02-26
+
+blurb: "농업 매뉴얼을 RAG로 사용해 LLM 답변을 만들어내는 농업 특화 챗봇. 농부가 \"우리 작물에 이런 증상이 있는데\" 같은 질문을 하면 매뉴얼 근거를 들어 대답."
+role: "개발 · 설계 · 기획"
+stack:
+  - Next.js
+  - Node.js
+  - Python
+  - OpenAI
+  - LLM
+tags:
+  - nextjs
+  - python
+  - llm
+  - ai-agent
+metric: "농업 매뉴얼 임베딩 기반 RAG"
+repo: closed-source
+
+heroImage: hero.png
+heroCaption: "fig. 01 — FarmiBrain 챗봇 화면"
+live:
+  url: "https://farmibrain.com/"
+  label: "live"
+
+facts:
+  - { k: "역할", v: "개발 · 설계 · 기획" }
+  - { k: "기간", v: "2026.01.26 — 2026.02.26 (1개월)" }
+  - { k: "스택", v: "Next.js · Node · Python · OpenAI" }
+  - { k: "도메인", v: "농업 · 매뉴얼 RAG" }
+  - { k: "상태", v: "v1.0 운영 중" }
+
+tldr:
+  - "농업 매뉴얼을 <b>RAG (Retrieval-Augmented Generation)</b>로 사용하여, 농부가 자신의 농장 상황을 질문하면 LLM이 매뉴얼 근거를 들어 답변하는 챗봇입니다."
+  - "Next.js 프론트엔드와 Python 임베딩 파이프라인으로 구성했으며, OpenAI를 LLM 백엔드로 사용합니다."
+
+decisions:
+  - type: added
+    title: "농업 매뉴얼 RAG 파이프라인"
+    body: "농업 관련 공식 매뉴얼들을 청크 단위로 임베딩하여 벡터 DB에 적재. 질의에 가장 관련 있는 청크들을 끌어와 LLM 컨텍스트로 주입."
+
+retro:
+  improvements:
+    - "HW 연계가 필요. 현장 센서/카메라 데이터까지 받아서 종합 판단할 수 있어야 진짜 \"농장을 대신 생각하는\" 에이전트가 됨."
+---

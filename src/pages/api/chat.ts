@@ -1,16 +1,23 @@
 import type { APIContext } from "astro";
+import { buildSystemPrompt } from "@/lib/system-prompt";
 
 export const prerender = false;
 
-const SYSTEM = `You are an AI assistant on Decembaek's developer portfolio. Decembaek is an engineer-designer based in Seoul. Recent work: Daybreak (calendar app), diff-club (PR-review newsletter), korean-words.txt (open-source corpus), midnight-runner (CI dashboard), slow-search (Rust experiment). Stack: TypeScript, React, Go, Swift, Rust, Postgres. Writes essays about software craft. Tone: witty, dry, lowercase, brief — 1-3 short sentences max. No emoji. Never start with 'Sure!' or 'Of course'. If asked something off-topic, gently redirect.`;
+// Workers AI model. gpt-oss-120b — top-tier quality, OpenAI's open model.
+// Heavier on neurons than the 8B Llama, but the free tier still covers a
+// personal portfolio comfortably. Drop to `@cf/meta/llama-3.1-8b-instruct-fast`
+// or `@cf/meta/llama-3.3-70b-instruct-fp8-fast` if cost or latency matter more.
+const MODEL = "@cf/openai/gpt-oss-120b";
 
 type IncomingMsg = { role: "you" | "bot"; text: string };
 
 export async function POST(context: APIContext) {
   const env = context.locals.runtime?.env as Env | undefined;
-  const apiKey = env?.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    return new Response("ANTHROPIC_API_KEY is not configured.", { status: 500 });
+  const ai = env?.AI;
+  if (!ai) {
+    return new Response("AI binding not available (run via `wrangler dev` or deploy).", {
+      status: 500,
+    });
   }
 
   let body: { messages?: IncomingMsg[] };
@@ -20,44 +27,32 @@ export async function POST(context: APIContext) {
     return new Response("invalid json", { status: 400 });
   }
 
-  const messages = (body.messages ?? [])
-    .filter((m): m is IncomingMsg => !!m && typeof m.text === "string")
+  const history = (body.messages ?? [])
+    .filter((m): m is IncomingMsg => !!m && typeof m.text === "string" && m.text.length > 0)
     .map((m) => ({
-      role: m.role === "you" ? "user" : "assistant",
+      role: m.role === "you" ? ("user" as const) : ("assistant" as const),
       content: m.text,
     }));
 
-  if (messages.length === 0) {
+  if (history.length === 0) {
     return new Response("no messages", { status: 400 });
   }
 
-  const upstream = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 256,
-      stream: true,
-      system: SYSTEM,
-      messages,
-    }),
-  });
+  const system = await buildSystemPrompt();
 
-  if (!upstream.ok || !upstream.body) {
-    const errText = await upstream.text().catch(() => "");
-    return new Response(`upstream error ${upstream.status}: ${errText}`.slice(0, 500), {
-      status: 502,
-    });
-  }
+  // Workers AI returns a ReadableStream of SSE-formatted bytes when stream:true.
+  // Each event is `data: {"response":"<token>","p":"..."}` or `data: [DONE]`.
+  // The binding's TS signature is loose ('Record<string, unknown>'); we cast
+  // through unknown because the runtime contract is documented and stable.
+  const upstream = (await ai.run(MODEL, {
+    messages: [{ role: "system", content: system }, ...history],
+    stream: true,
+    max_tokens: 256,
+  })) as unknown as ReadableStream<Uint8Array>;
 
-  // Re-frame Anthropic SSE -> plain text chunks the client can append.
-  const stream = new ReadableStream({
+  const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
-      const reader = upstream.body!.getReader();
+      const reader = upstream.getReader();
       const decoder = new TextDecoder();
       const encoder = new TextEncoder();
       let buf = "";
@@ -69,17 +64,13 @@ export async function POST(context: APIContext) {
           const lines = buf.split("\n");
           buf = lines.pop() ?? "";
           for (const line of lines) {
-            if (!line.startsWith("data: ")) continue;
-            const json = line.slice(6).trim();
-            if (!json || json === "[DONE]") continue;
+            const trimmed = line.trim();
+            if (!trimmed.startsWith("data:")) continue;
+            const payload = trimmed.slice(5).trim();
+            if (!payload || payload === "[DONE]") continue;
             try {
-              const evt = JSON.parse(json) as {
-                type: string;
-                delta?: { type?: string; text?: string };
-              };
-              if (evt.type === "content_block_delta" && evt.delta?.type === "text_delta" && evt.delta.text) {
-                controller.enqueue(encoder.encode(evt.delta.text));
-              }
+              const evt = JSON.parse(payload) as { response?: string };
+              if (evt.response) controller.enqueue(encoder.encode(evt.response));
             } catch {
               // skip malformed event
             }

@@ -14,6 +14,12 @@ import ContactSection from "@/components/ContactSection.astro";
 import Footer from "@/components/Footer.astro";
 import Terminal from "@/components/Terminal";
 import ChatBot from "@/components/ChatBot";
+import { getCollection } from "astro:content";
+
+const allProjects = await getCollection("projects", ({ data }) => !data.draft);
+const terminalProjects = allProjects
+  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
+  .map((p) => ({ name: p.data.name, tagline: p.data.tagline }));
 ---
 <BaseLayout>
   <div class="app">
@@ -29,7 +35,7 @@ import ChatBot from "@/components/ChatBot";
       <ContactSection />
       <Footer />
     </main>
-    <Terminal client:idle />
+    <Terminal client:idle projects={terminalProjects} />
     <ChatBot client:idle />
   </div>
 </BaseLayout>

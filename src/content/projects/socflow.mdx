@@ -1,0 +1,61 @@
+---
+name: "SocFlow"
+tagline: "여러 SNS 계정을 한 곳에서 관리 · 자동화하는 SaaS."
+version: "v1.0"
+status: running
+year: "2026"
+publishedAt: 2026-02-01
+
+blurb: "사용 중인 SNS 계정들을 한 곳에 모아서 관리하는 서비스. 각 SNS에 직접 로그인하지 않고도 게시물 작성 · 예약 · 발행이 가능하며, API를 통해 자동화 솔루션과 쉽게 연계."
+role: "개발 · 설계 · 기획"
+stack:
+  - Next.js
+  - Hono
+  - TypeScript
+  - Queue / Cron
+  - Toss Payments SDK
+tags:
+  - typescript
+  - nextjs
+  - automation
+metric: "SaaS · 결제 통합 완료"
+repo: closed-source
+
+heroImage: hero.png
+heroCaption: "fig. 01 — SocFlow 대시보드"
+live:
+  url: "https://socflow.app/"
+  label: "live"
+
+facts:
+  - { k: "역할", v: "개발 · 설계 · 기획" }
+  - { k: "기간", v: "2025.10.01 — 2026.02.01 (4개월)" }
+  - { k: "스택", v: "Next.js · Hono · Queue/Cron · Toss SDK" }
+  - { k: "타입", v: "SaaS · 결제 통합" }
+  - { k: "상태", v: "운영 중" }
+
+tldr:
+  - "사용 중인 SNS 계정들을 <b>한 곳에서 관리</b>하는 서비스입니다. 각 SNS에 매번 직접 로그인하지 않고도 게시물 작성과 예약 발행을 할 수 있고, API를 통해 외부 자동화 솔루션과 연계됩니다."
+  - "프론트는 Next.js, 백엔드는 <b>Hono</b> 기반. 게시물 예약 발행은 큐와 크론으로 처리하고, 유료 플랜은 Toss Payments SDK로 결제 받습니다."
+
+shots:
+  - { image: shot-1.png, caption: "fig. 02 — 계정 관리 화면" }
+  - { image: shot-2.png, caption: "fig. 03 — 게시물 작성/예약 화면" }
+
+decisions:
+  - type: added
+    title: "API 우선 설계"
+    body: "외부 자동화 솔루션 (Zapier, Make, n8n 등)에서 호출할 수 있도록 처음부터 REST API를 1급 시민으로 두고 설계. UI는 그 API 위에 얹은 클라이언트."
+  - type: added
+    title: "Queue + Cron 기반 예약 발행"
+    body: "예약된 게시물을 안정적으로 발행하기 위해 큐와 크론을 조합. 실패 시 백오프 재시도, idempotency key로 중복 발행 차단."
+  - type: added
+    title: "Toss Payments 결제 통합"
+    body: "구독형 SaaS 결제 흐름을 Toss Payments SDK로 구현. 한국 시장 타겟이라 가장 자연스러운 선택."
+
+retro:
+  good:
+    - "SNS 계정에 직접 로그인하지 않고도 관리할 수 있도록 API 추상화를 깔끔히 만든 것."
+  improvements:
+    - "마케팅 전략이 더 필요. 제품은 동작하지만 \"왜 이게 필요한가\"를 잠재 고객에게 한 줄로 설명하는 게 어려움."
+---

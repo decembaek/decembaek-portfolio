@@ -1,0 +1,59 @@
+---
+name: "camera-world"
+tagline: "카메라 작품과 브랜드를 함께 모으려던 Pinterest 풍 프로젝트 (미완성)."
+version: "v0.1"
+status: experiment
+year: "2024"
+publishedAt: 2024-07-12
+
+blurb: "Pinterest 디자인을 참고하여 만든 카메라 작품 공유 플랫폼. 사진 작가들이 이미지를 업로드해 작품을 공유하고, 카메라 브랜드관에서 색감 · 해상도를 비교할 수 있도록 기획. 솔로 진행 중 디자인 한계로 중단."
+role: "개발 · 설계 · 기획 (100%)"
+stack:
+  - React
+  - Django
+  - Python
+  - JavaScript
+  - Chakra UI
+tags:
+  - python
+  - react
+  - django
+  - side-project
+metric: "MVP 진행 중 중단"
+repo: public
+
+heroImage: hero.png
+heroCaption: "fig. 01 — 메인 화면 시안"
+repos:
+  - { label: frontend, url: "https://github.com/decembaek/camera_world_frontend_react_js" }
+  - { label: backend,  url: "https://github.com/decembaek/camera_world_backend" }
+
+facts:
+  - { k: "역할", v: "개발 · 설계 · 기획 (100%)" }
+  - { k: "기간", v: "2024.07.01 — 2024.07.12" }
+  - { k: "스택", v: "React · Django · Chakra UI" }
+  - { k: "상태", v: "미완성 · 학습 후 중단" }
+
+tldr:
+  - "Pinterest 디자인을 참고해 만든 <b>카메라 작품 공유 플랫폼</b>. 사진 작가들이 이미지를 업로드해 서로 작품을 공유하고, 브랜드관에서 카메라 브랜드마다 다른 색감 · 해상도를 비교할 수 있도록 기획했습니다."
+  - "회원가입 · 로그인까지 구현 후, 사진 업로드 디자인을 혼자 처리하기 어려워 일시 중단. <em>디자이너의 필요성을 절감</em>한 프로젝트."
+
+shots:
+  - { image: shot-1.png, caption: "fig. 02 — 추가 시안" }
+
+decisions:
+  - type: added
+    title: "로그인 / 회원가입"
+    body: "Django 백엔드와 React 프론트 분리, REST API로 인증 흐름 구현."
+
+retro:
+  good:
+    - "Pinterest 풍 그리드 디자인과 카메라 도메인의 결합 아이디어 자체는 여전히 좋다고 생각."
+  improvements:
+    - "사진 관련 프로젝트는 MVP만으로 끝나기 어려움 — 디자인 품질이 곧 제품이라."
+    - "혼자 설계 · 개발 · 디자인을 다 진행하는 데 한계를 느낌. 디자이너 협업 필요."
+  openIssues:
+    - { id: "#01", text: "이미지 업로드 / 갤러리 UI" }
+    - { id: "#02", text: "카메라 브랜드관 페이지" }
+    - { id: "#03", text: "검색 기능" }
+---

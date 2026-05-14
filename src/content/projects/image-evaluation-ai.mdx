@@ -1,0 +1,50 @@
+---
+name: "image-evaluation-ai"
+tagline: "찍은 사진을 LLM이 점수 매겨주는 토이 프로젝트."
+version: "v0.1"
+status: experiment
+year: "2024"
+publishedAt: 2024-10-13
+
+blurb: "이미지를 업로드하면 LLM이 분석하여 \"얼마나 잘 찍은 사진인지\" 점수와 짧은 평가를 돌려주는 Streamlit 앱. 사진을 자기 객관화하는 도구로 시작."
+role: "개발 · 설계 · 기획 (100%)"
+stack:
+  - Python
+  - Streamlit
+  - OpenAI
+  - LLM
+tags:
+  - python
+  - llm
+  - ai-agent
+metric: "Streamlit 무료 호스팅 · 데모 운영"
+repo: closed-source
+
+heroImage: hero.png
+heroCaption: "fig. 01 — 이미지 평가 결과 화면"
+live:
+  url: "https://decembaek.streamlit.app/%EC%9D%B4%EB%AF%B8%EC%A7%80_AI"
+  label: "demo"
+
+facts:
+  - { k: "역할", v: "개발 · 설계 · 기획 (100%)" }
+  - { k: "기간", v: "2024.10.10 — 2024.10.13 (3일)" }
+  - { k: "스택", v: "Python · Streamlit · OpenAI" }
+  - { k: "타입", v: "토이 · 데모" }
+  - { k: "주의", v: "무료 호스팅 · 콜드 스타트 있음" }
+
+tldr:
+  - "이미지를 업로드하면 LLM이 분석해서 <b>점수와 짧은 평가</b>를 돌려주는 Streamlit 앱입니다. 자기 사진을 \"객관적으로\" 보고 싶을 때 쓰려고 만들었습니다."
+  - "OpenAI의 비전 입력을 받아 사진의 구도 · 노출 · 주제 등을 평가하도록 프롬프트했고, 3일 만에 첫 데모를 띄웠습니다."
+
+shots:
+  - { image: shot-1.png, caption: "fig. 02 — 평가 결과 1" }
+  - { image: shot-2.png, caption: "fig. 03 — 평가 결과 2" }
+  - { image: shot-3.png, caption: "fig. 04 — Streamlit 콜드 스타트 안내" }
+
+retro:
+  good:
+    - "촬영 후 이미지를 업로드해서 사진을 자기 객관화하는 흐름을 빠르게 검증한 것."
+  improvements:
+    - "채점 기준이 LLM 프롬프트에만 의존하다 보니 일관성이 부족. 정량적 기준 + 학습된 모델로 보강 필요."
+---

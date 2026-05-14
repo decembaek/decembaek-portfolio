@@ -1,13 +1,30 @@
 import { useState } from "react";
-import { PROJECTS, PROJECT_FILTERS } from "@/data/projects";
+import { PROJECT_FILTERS } from "@/data/projects";
 
-export default function Projects() {
+export type ProjectItem = {
+  slug: string;
+  name: string;
+  tagline: string;
+  blurb: string;
+  role: string;
+  stack: string[];
+  tags: string[];
+  metric: string;
+  status: string;
+  year: string;
+};
+
+interface Props {
+  items: ProjectItem[];
+}
+
+export default function Projects({ items }: Props) {
   const [filter, setFilter] = useState("all");
   const [expanded, setExpanded] = useState<string | null>(null);
 
-  const filtered = filter === "all" ? PROJECTS : PROJECTS.filter((p) => p.tags.includes(filter));
+  const filtered = filter === "all" ? items : items.filter((p) => p.tags.includes(filter));
   const countFor = (id: string) =>
-    id === "all" ? PROJECTS.length : PROJECTS.filter((p) => p.tags.includes(id)).length;
+    id === "all" ? items.length : items.filter((p) => p.tags.includes(id)).length;
 
   return (
     <>
@@ -33,7 +50,7 @@ export default function Projects() {
           })}
         </div>
         <div className="proj-filter__count">
-          showing <b>{filtered.length}</b> of {PROJECTS.length}
+          showing <b>{filtered.length}</b> of {items.length}
         </div>
       </div>
 
@@ -46,16 +63,18 @@ export default function Projects() {
           </div>
         )}
         {filtered.map((p, i) => {
-          const isOpen = expanded === p.name;
+          const isOpen = expanded === p.slug;
           const statusKind: "ok" | "live" | "muted" =
-            p.status === "shipped" ? "ok" : p.status === "running" ? "live" : "muted";
+            p.status === "shipped" ? "ok" : p.status === "running" || p.status === "ongoing" ? "live" : "muted";
           return (
-            <article key={p.name} className={`proj ${isOpen ? "proj--open" : ""}`}>
+            <article key={p.slug} className={`proj ${isOpen ? "proj--open" : ""}`}>
               <div className="proj__top">
                 <span className="proj__no">/{String(i + 1).padStart(2, "0")}</span>
                 <h3 className="proj__name">
-                  {p.name}
-                  <span className="proj__slash">/</span>
+                  <a href={`/projects/${p.slug}/`} style={{ borderBottom: 0, color: "inherit" }}>
+                    {p.name}
+                    <span className="proj__slash">/</span>
+                  </a>
                 </h3>
                 <span className={`tag tag-${statusKind}`}>{p.status}</span>
               </div>
@@ -93,12 +112,17 @@ export default function Projects() {
                   </button>
                 ))}
               </div>
-              <button
-                className="proj__link"
-                onClick={() => setExpanded(isOpen ? null : p.name)}
-              >
-                {isOpen ? "← collapse" : "read more →"}
-              </button>
+              <div style={{ display: "flex", gap: 14, alignItems: "baseline", marginTop: 8 }}>
+                <button
+                  className="proj__link"
+                  onClick={() => setExpanded(isOpen ? null : p.slug)}
+                >
+                  {isOpen ? "← collapse" : "read more →"}
+                </button>
+                <a className="proj__link" href={`/projects/${p.slug}/`}>
+                  open case study →
+                </a>
+              </div>
             </article>
           );
         })}

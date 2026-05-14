@@ -1,0 +1,463 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Footer from "@/components/Footer.astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+
+export const prerender = true;
+
+// All project images live in src/assets/projects/<slug>/<filename>. import.meta.glob
+// is static so the absent-file case (most projects today) is graceful.
+const projectImages = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/projects/**/*.{jpg,jpeg,png,webp,avif}",
+  { eager: true },
+);
+function resolveImage(slug: string, file?: string): ImageMetadata | null {
+  if (!file) return null;
+  const key = `/src/assets/projects/${slug}/${file}`;
+  return projectImages[key]?.default ?? null;
+}
+
+function statusKind(s: string): "ok" | "live" | "muted" {
+  if (s === "shipped") return "ok";
+  if (s === "running" || s === "ongoing") return "live";
+  return "muted";
+}
+
+export async function getStaticPaths() {
+  const all = await getCollection("projects", ({ data }) => !data.draft);
+  const sorted = all.sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+  return sorted.map((post, i) => ({
+    params: { slug: post.slug },
+    props: {
+      post,
+      prev: sorted[i + 1] ?? null,
+      next: sorted[i - 1] ?? null,
+    },
+  }));
+}
+
+type Props = {
+  post: CollectionEntry<"projects">;
+  prev: CollectionEntry<"projects"> | null;
+  next: CollectionEntry<"projects"> | null;
+};
+
+const { post, prev, next } = Astro.props as Props;
+const d = post.data;
+const heroImg = resolveImage(post.slug, d.heroImage);
+const publishedStr = d.publishedAt.toISOString().slice(0, 10);
+const chipKind = statusKind(d.status);
+
+// Extract a display path from a GitHub URL ("https://github.com/owner/repo" → "owner/repo").
+function repoPath(url: string): string {
+  try {
+    const u = new URL(url);
+    return u.pathname.replace(/^\/+|\/+$/g, "");
+  } catch {
+    return url;
+  }
+}
+
+// "https://socflow.app/foo" → "socflow.app/foo" — drop the protocol for compact display.
+function prettyUrl(url: string): string {
+  try {
+    const u = new URL(url);
+    const pathless = u.host + (u.pathname === "/" ? "" : u.pathname);
+    return pathless.replace(/\/$/, "");
+  } catch {
+    return url;
+  }
+}
+
+// Normalize a YouTube URL to the embed form. Supports youtu.be/<id>,
+// youtube.com/watch?v=<id>, and youtube.com/embed/<id> (passthrough). Returns
+// null for anything else so the page degrades to a plain link.
+function youtubeEmbed(url: string): string | null {
+  try {
+    const u = new URL(url);
+    if (u.hostname === "youtu.be") {
+      const id = u.pathname.slice(1).split("/")[0];
+      return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
+    }
+    if (u.hostname.endsWith("youtube.com")) {
+      if (u.pathname.startsWith("/embed/")) return url.replace("youtube.com", "youtube-nocookie.com");
+      const id = u.searchParams.get("v");
+      return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+---
+<BaseLayout
+  title={`${d.name} / decembaek`}
+  description={d.blurb}
+  ogType="article"
+  publishedTime={d.publishedAt.toISOString()}
+>
+  <div class="app theme-paper density-comfortable">
+    <div class="statusbar">
+      <span>projects / {d.name}</span>
+      <span class="statusbar__sep">·</span>
+      <span><span class="statusbar__dot"></span> {d.status}</span>
+      <span class="statusbar__sep">·</span>
+      <span>{d.version} · published {publishedStr}</span>
+      <span class="statusbar__push">⌘← prev · ⌘→ next</span>
+    </div>
+
+    <nav class="nav nav--detail">
+      <a class="nav__brand" href="/">decembaek<span style="color: var(--accent);">.</span>dev</a>
+      <div class="crumbs">
+        <a href="/">~</a>
+        <span class="crumbs__sep">/</span>
+        <a href="/#projects">projects</a>
+        <span class="crumbs__sep">/</span>
+        <span class="crumbs__current">{d.name}</span>
+      </div>
+    </nav>
+
+    <main class="page page--detail" data-pagefind-body>
+      {/* hero */}
+      <header class="dp-hero">
+        <div class="dp-hero__meta">
+          <span class="dp-hero__ver">{d.version}</span>
+          <span class="dp-hero__sep">·</span>
+          <span class={`dp-hero__chip dp-hero__chip--${chipKind}`}>● {d.status}</span>
+          <span class="dp-hero__sep">·</span>
+          <span>{d.year}</span>
+          {d.tags.length > 0 && (
+            <>
+              <span class="dp-hero__sep">·</span>
+              <span class="dp-hero__tags">
+                {d.tags.map((t) => <span>#{t}</span>)}
+              </span>
+            </>
+          )}
+        </div>
+
+        <h1 class="dp-hero__title">
+          {d.name}<span class="dp-hero__slash">/</span>
+        </h1>
+        <p class="dp-hero__tag">
+          <em>{d.tagline}</em>
+        </p>
+
+        {d.live && (
+          <div class="dp-hero__live">
+            <span class="dp-hero__live-prompt">$ open</span>
+            <a
+              class="dp-hero__live-btn"
+              href={d.live.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="dp-hero__live-label">
+                {d.live.label ?? "live"}
+              </span>
+              <span class="dp-hero__live-url">{prettyUrl(d.live.url)}</span>
+              <span class="dp-hero__live-arrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+        )}
+
+        {d.repos.length > 0 && (
+          <div class="dp-hero__repos" aria-label="source repositories">
+            <span class="dp-hero__repos-prompt">$ git remote -v</span>
+            <ul class="dp-hero__repos-list">
+              {d.repos.map((r) => (
+                <li>
+                  <a class="dp-hero__repo" href={r.url} target="_blank" rel="noopener noreferrer">
+                    <svg class="dp-hero__repo-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+                      <path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                    </svg>
+                    {r.label && <span class="dp-hero__repo-label">{r.label}</span>}
+                    <span class="dp-hero__repo-path">{repoPath(r.url)}</span>
+                    <span class="dp-hero__repo-arrow">↗</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div class="dp-hero__image">
+          <div class="dp-hero__image-frame">
+            {heroImg ? (
+              <img src={heroImg.src} width={heroImg.width} height={heroImg.height} alt={d.name} />
+            ) : (
+              <div class="dp-hero__placeholder">
+                drop src/assets/projects/{post.slug}/{d.heroImage ?? "hero.jpg"} →
+              </div>
+            )}
+          </div>
+          <div class="dp-hero__caption">
+            <span>{d.heroCaption ?? `fig. 01 — ${d.name} 메인 화면 (${d.version})`}</span>
+            {d.links.length > 0 && (
+              <span class="dp-hero__caption-link">
+                {d.links.map((l, i) => (
+                  <>
+                    {i > 0 && " · "}
+                    <a href={l.href}>{l.label}</a>
+                  </>
+                ))}
+              </span>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* facts */}
+      {d.facts.length > 0 && (
+        <section class="dp-facts">
+          <ul>
+            {d.facts.map((f) => (
+              <li>
+                <span class="dp-facts__k">{f.k}</span>
+                <span class="dp-facts__v">{f.v}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* tl;dr */}
+      {d.tldr.length > 0 && (
+        <section class="dp-section">
+          <header class="section-head">
+            <div class="section-head__line">
+              <span class="section-head__idx">§ 00</span>
+              <span class="section-head__file">TL;DR</span>
+              <span class="section-head__rule"></span>
+            </div>
+          </header>
+          <div class="dp-tldr">
+            {d.tldr.map((p) => <p set:html={p} />)}
+          </div>
+        </section>
+      )}
+
+      {/* problem */}
+      {d.problem && (
+        <section class="dp-section">
+          <header class="section-head">
+            <div class="section-head__line">
+              <span class="section-head__idx">§ 01</span>
+              <span class="section-head__file">문제</span>
+              <span class="section-head__rule"></span>
+            </div>
+            <p class="section-head__sub">// $ git log --since='2025-01' --grep='왜 만들었나'</p>
+          </header>
+          <div class="dp-prose">
+            {d.problem.paragraphs.map((p) => <p set:html={p} />)}
+            {d.problem.quote && (
+              <blockquote class="dp-quote">
+                <p>"{d.problem.quote.text}"</p>
+                <cite>{d.problem.quote.cite}</cite>
+              </blockquote>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* videos — placed before shots so video-led demos read first */}
+      {d.videos.length > 0 && (
+        <section class="dp-section">
+          <header class="section-head">
+            <div class="section-head__line">
+              <span class="section-head__idx">§ —</span>
+              <span class="section-head__file">demo</span>
+              <span class="section-head__rule"></span>
+            </div>
+            <p class="section-head__sub">// 실제 동작 영상</p>
+          </header>
+          <div class="dp-videos">
+            {d.videos.map((v) => {
+              const embed = youtubeEmbed(v.url);
+              return (
+                <figure>
+                  <div class="dp-video__frame">
+                    {embed ? (
+                      <iframe
+                        src={embed}
+                        title={v.caption ?? "demo video"}
+                        loading="lazy"
+                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allowfullscreen
+                      ></iframe>
+                    ) : (
+                      <a class="dp-video__fallback" href={v.url} target="_blank" rel="noopener noreferrer">
+                        ▶ {v.url}
+                      </a>
+                    )}
+                  </div>
+                  {v.caption && <figcaption set:html={v.caption} />}
+                </figure>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* shots */}
+      {d.shots.length > 0 && (
+        <section class="dp-section">
+          <header class="section-head">
+            <div class="section-head__line">
+              <span class="section-head__idx">§ 02</span>
+              <span class="section-head__file">해결</span>
+              <span class="section-head__rule"></span>
+            </div>
+            <p class="section-head__sub">// 4개월 동안 만든 것</p>
+          </header>
+          <div class="dp-shots">
+            {d.shots.map((s, idx) => {
+              const img = resolveImage(post.slug, s.image);
+              return (
+                <figure>
+                  <div class="dp-shots__frame" style={`aspect-ratio: ${s.aspect};`}>
+                    {img ? (
+                      <img src={img.src} width={img.width} height={img.height} alt="" />
+                    ) : (
+                      <div class="dp-shots__placeholder">
+                        drop src/assets/projects/{post.slug}/{s.image ?? `shot-${idx + 1}.jpg`} →
+                      </div>
+                    )}
+                  </div>
+                  <figcaption set:html={s.caption} />
+                </figure>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* decisions */}
+      {d.decisions.length > 0 && (
+        <section class="dp-section">
+          <header class="section-head">
+            <div class="section-head__line">
+              <span class="section-head__idx">§ 03</span>
+              <span class="section-head__file">주요 결정</span>
+              <span class="section-head__rule"></span>
+            </div>
+            <p class="section-head__sub">// $ git log --format='%h %s' --pretty | head</p>
+          </header>
+          <ol class="dp-decisions">
+            {d.decisions.map((dec, i) => (
+              <li class={`dp-d dp-d--${dec.type}`}>
+                <span class="dp-d__num">/{String(i + 1).padStart(2, "0")}</span>
+                <div class="dp-d__body">
+                  <div class="dp-d__head">
+                    <span class={`dp-d__type dp-d__type--${dec.type}`}>{dec.type}</span>
+                    <h3 class="dp-d__title">{dec.title}</h3>
+                  </div>
+                  <p class="dp-d__text">{dec.body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
+      {/* metrics */}
+      {d.metrics.length > 0 && (
+        <section class="dp-section">
+          <header class="section-head">
+            <div class="section-head__line">
+              <span class="section-head__idx">§ 04</span>
+              <span class="section-head__file">결과</span>
+              <span class="section-head__rule"></span>
+            </div>
+            <p class="section-head__sub">// 출시 6개월 시점</p>
+          </header>
+          <div class="dp-metrics">
+            {d.metrics.map((m) => (
+              <div class="dp-metric">
+                <span class="dp-metric__v">{m.v}</span>
+                <span class="dp-metric__k">{m.k}</span>
+                {m.sub && <span class="dp-metric__sub">{m.sub}</span>}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* retro */}
+      {d.retro && (
+        <section class="dp-section">
+          <header class="section-head">
+            <div class="section-head__line">
+              <span class="section-head__idx">§ 05</span>
+              <span class="section-head__file">회고</span>
+              <span class="section-head__rule"></span>
+            </div>
+            <p class="section-head__sub">// $ git log --author='나' --grep='배운 것'</p>
+          </header>
+          <div class="dp-retro">
+            <div class="dp-retro__col">
+              <h4>잘한 것</h4>
+              <ul>
+                {d.retro.good.map((g) => <li>{g}</li>)}
+              </ul>
+            </div>
+            <div class="dp-retro__col">
+              <h4>다시 한다면</h4>
+              <ul>
+                {d.retro.improvements.map((g) => <li>{g}</li>)}
+              </ul>
+            </div>
+            <div class="dp-retro__col">
+              <h4>open issues</h4>
+              <ul class="dp-retro__issues">
+                {d.retro.openIssues.map((iss) => (
+                  <li><span>{iss.id}</span> {iss.text}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* next / prev */}
+      <footer class="dp-nextprev">
+        {prev ? (
+          <a class="dp-np dp-np--prev" href={`/projects/${prev.slug}/`}>
+            <span class="dp-np__label">← 이전 프로젝트</span>
+            <span class="dp-np__name">{prev.data.name}/</span>
+          </a>
+        ) : (
+          <span class="dp-np dp-np--prev dp-np--disabled">
+            <span class="dp-np__label">← 이전 프로젝트</span>
+            <span class="dp-np__name">—</span>
+          </span>
+        )}
+        <a class="dp-np dp-np--up" href="/#projects">
+          <span class="dp-np__label">↑</span>
+          <span class="dp-np__name">전체 프로젝트로</span>
+        </a>
+        {next ? (
+          <a class="dp-np dp-np--next" href={`/projects/${next.slug}/`}>
+            <span class="dp-np__label">다음 프로젝트 →</span>
+            <span class="dp-np__name">{next.data.name}/</span>
+          </a>
+        ) : (
+          <span class="dp-np dp-np--next dp-np--disabled">
+            <span class="dp-np__label">다음 프로젝트 →</span>
+            <span class="dp-np__name">—</span>
+          </span>
+        )}
+      </footer>
+    </main>
+    <Footer />
+  </div>
+
+  <script is:inline define:vars={{ prevHref: prev ? `/projects/${prev.slug}/` : null, nextHref: next ? `/projects/${next.slug}/` : null }}>
+    document.addEventListener("keydown", (e) => {
+      if (!(e.metaKey || e.ctrlKey)) return;
+      if (e.key === "ArrowLeft" && prevHref) window.location.href = prevHref;
+      if (e.key === "ArrowRight" && nextHref) window.location.href = nextHref;
+    });
+  </script>
+</BaseLayout>

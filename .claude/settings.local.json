@@ -9,7 +9,23 @@
       "Bash(gh auth *)",
       "Bash(git config *)",
       "Bash(git init *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "Bash(sips -s format jpeg -s formatOptions 85 src/assets/portrait.HEIC --out src/assets/portrait.jpg)",
+      "Bash(sips -Z 800 -s format jpeg -s formatOptions 85 src/assets/portrait.jpg --out src/assets/portrait.jpg)",
+      "Bash(magick src/assets/portrait.HEIC -auto-orient -resize 'x1000>' -strip -quality 85 src/assets/portrait.jpg)",
+      "WebFetch(domain:api.anthropic.com)",
+      "Bash(curl -sS -I \"https://api.anthropic.com/v1/design/h/-S06ILsztnN00tfrh66JMg?open_file=projects/daybreak.html\")",
+      "Bash(curl -sS \"https://api.anthropic.com/v1/design/h/-S06ILsztnN00tfrh66JMg?open_file=projects/daybreak.html\")",
+      "Bash(grep -oE '<section id=\"projects\"[^<]*[^>]*>.{0,500}' dist/index.html)",
+      "Bash(awk '/id=\"projects\"/,/<section/' dist/index.html)",
+      "Bash(lsof -i:4321)",
+      "Bash(kill 4842)",
+      "Bash(curl -s http://localhost:4321/)",
+      "Bash(npm ls *)",
+      "Bash(pkill -f \"astro dev\")"
     ]
   }
 }

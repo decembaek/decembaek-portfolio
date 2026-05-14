@@ -1,0 +1,54 @@
+---
+name: "KDP Console (CRM)"
+tagline: "한의원을 위한 고객관리 솔루션 — 외주 프로젝트."
+version: "v1.0"
+status: shipped
+year: "2026"
+publishedAt: 2026-02-28
+
+blurb: "한의원에서 고객 관리 솔루션을 요청해 외주로 제작. 환자 일괄 카톡 알림톡 발송 기능을 포함한 환자 관리 웹 서비스. 카카오 비즈니스 센터의 비즈톡 딜러사 API 연계."
+role: "외주 개발 · 솔로"
+stack:
+  - TypeScript
+  - Kakao 알림톡 API
+  - 비즈톡 API
+tags:
+  - typescript
+  - automation
+  - freelance
+metric: "한의원 1곳 운영 중 · 알림톡 정기 발송"
+repo: closed-source
+
+heroImage: hero.png
+heroCaption: "fig. 01 — KDP Console 로그인 화면"
+live:
+  url: "https://biz.decembaek.com/console/login"
+  label: "KDP Console"
+
+facts:
+  - { k: "역할", v: "외주 개발 · 솔로" }
+  - { k: "기간", v: "2026.02.28 (단기 외주)" }
+  - { k: "스택", v: "TypeScript · Kakao 알림톡 · 비즈톡 API" }
+  - { k: "고객", v: "한의원 (B2B 외주)" }
+  - { k: "상태", v: "운영 중" }
+
+tldr:
+  - "한의원에서 고객 관리 솔루션이 필요하다는 요청을 받아 외주로 제작한 환자 관리 웹 서비스입니다. 관리 중인 고객들에게 <b>일괄 카카오 알림톡 발송</b> 기능을 핵심으로 구현했습니다."
+  - "카카오톡 비즈니스 센터를 통해 알림톡 딜러사인 비즈톡과 연계하는 API를 직접 설계 · 제작했고, 의료기관 도메인에서 발생하는 환자 데이터 흐름을 안정적으로 처리할 수 있도록 했습니다."
+
+shots:
+  - { image: shot-1.png, caption: "fig. 02 — 환자 관리 대시보드" }
+  - { image: shot-2.png, caption: "fig. 03 — 알림톡 일괄 발송 화면" }
+  - { image: shot-3.png, caption: "fig. 04 — 환자 상세 정보" }
+  - { image: shot-4.png, caption: "fig. 05 — 알림톡 템플릿 관리" }
+  - { image: shot-5.png, caption: "fig. 06 — 발송 이력" }
+  - { image: shot-6.png, caption: "fig. 07 — 설정 화면" }
+
+decisions:
+  - type: added
+    title: "비즈톡 API 직접 연계"
+    body: "카카오톡 비즈니스 센터의 알림톡 딜러사(비즈톡)와의 연계 API를 직접 설계 · 제작. SDK가 부실해 raw HTTP로 직접 통신."
+  - type: added
+    title: "일괄 발송 기능"
+    body: "관리 중인 환자 전체 또는 필터링된 그룹에 카톡 알림톡을 한 번에 보내는 기능. 한의원 운영자가 매번 개별 메시지를 보내지 않아도 됨."
+---

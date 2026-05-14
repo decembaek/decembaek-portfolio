@@ -1,0 +1,49 @@
+---
+name: "intro-chatbot"
+tagline: "나를 소개하는 실시간 챗봇 — 채팅 답장 대신 챗봇이 한다."
+version: "v0.1"
+status: experiment
+year: "2024"
+publishedAt: 2024-10-10
+
+blurb: "나의 정보를 넣어 \"또 다른 나\"를 만든 LLM 챗봇. 처음 만나는 사람이 나에 대해 궁금한 것을 챗봇한테 실시간으로 물어볼 수 있도록 구현."
+role: "개발 · 설계 · 기획 (100%)"
+stack:
+  - Python
+  - Streamlit
+  - OpenAI
+  - LLM
+tags:
+  - python
+  - llm
+  - ai-agent
+metric: "Streamlit 무료 호스팅 · 데모 운영"
+repo: closed-source
+
+heroImage: hero.png
+heroCaption: "fig. 01 — LLM 챗봇 메인"
+live:
+  url: "https://decembaek.streamlit.app/"
+  label: "demo"
+
+facts:
+  - { k: "역할", v: "개발 · 설계 · 기획 (100%)" }
+  - { k: "기간", v: "2024.10.02 — 2024.10.10 (8일)" }
+  - { k: "스택", v: "Python · Streamlit · OpenAI" }
+  - { k: "타입", v: "토이 · 데모" }
+  - { k: "주의", v: "무료 호스팅 · 콜드 스타트 있음" }
+
+tldr:
+  - "나의 정보를 넣어 만든 <b>또 다른 나</b>입니다. 사람들이 나한테 직접 물어보기 전에 챗봇이 먼저 대답해줄 수 있도록 만들었습니다."
+  - "이번 포트폴리오의 오른쪽 아래에 떠있는 챗봇의 초기 프로토타입이기도 합니다. 이때는 Streamlit + OpenAI 조합이었고, 현재는 Cloudflare Workers AI로 옮겨왔습니다."
+
+shots:
+  - { image: shot-1.png, caption: "fig. 02 — 대화 진행 화면" }
+
+retro:
+  good:
+    - "내가 직접 답장하지 않아도 챗봇이 자동으로 답변해주는 흐름을 처음으로 검증한 프로젝트."
+    - "LLM 사용 이해도가 크게 증가. 이후 더 정교한 AI 에이전트 프로젝트로 이어짐."
+  improvements:
+    - "시스템 프롬프트 / 페르소나 업데이트 필요. 시간이 지나면서 내 정보가 stale 해짐."
+---

@@ -3,10 +3,10 @@ import { useEffect, useRef, useState } from "react";
 type Msg = { role: "you" | "bot"; text: string };
 
 const SUGGESTIONS = [
-  "what's your favorite project?",
-  "are you open to new roles?",
-  "why a candle for the CI dashboard?",
-  "what's on your reading list?",
+  "요즘 어떤 프로젝트 만들고 있어요?",
+  "AI 에이전트는 어떤 거 작업 중?",
+  "스택이 어떻게 돼요?",
+  "이직 / 새 역할 열려 있나요?",
 ];
 
 export default function ChatBot() {
@@ -14,7 +14,7 @@ export default function ChatBot() {
   const [msgs, setMsgs] = useState<Msg[]>([
     {
       role: "bot",
-      text: "hi — i'm a thin wrapper around an LLM, briefed to answer as decembaek. ask me about the projects, the stack, hiring, or whatever's on your mind.",
+      text: "안녕하세요. decembaek 대신 답하도록 세팅된 LLM이에요. 프로젝트, 스택, 채용, 아무거나 물어보세요.",
     },
   ]);
   const [input, setInput] = useState("");
@@ -103,7 +103,7 @@ export default function ChatBot() {
           <header className="chat-modal__bar">
             <span className="chat-modal__title">
               <span className="chat-modal__dot" />
-              decembaek-bot · <span className="chat-modal__model">haiku-4.5</span>
+              decembaek-bot · <span className="chat-modal__model">gpt-oss-120b</span>
             </span>
             <button className="chat-modal__close" onClick={() => setOpen(false)}>
               ✕

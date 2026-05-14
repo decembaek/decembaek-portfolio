@@ -1,9 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { PROJECTS } from "@/data/projects";
 
 type Line = { kind: "in" | "out"; text: string };
 
-export default function Terminal() {
+export type TerminalProject = { name: string; tagline: string };
+
+interface Props {
+  projects?: TerminalProject[];
+}
+
+export default function Terminal({ projects = [] }: Props) {
   const [open, setOpen] = useState(false);
   const [history, setHistory] = useState<Line[]>([
     { kind: "out", text: "decembaek-portfolio · v2026.05" },
@@ -76,7 +81,11 @@ export default function Terminal() {
         else push([`cat: ${rest[0] || ""}: no such section`]);
         break;
       case "projects":
-        push(PROJECTS.map((p) => `  ${p.name.padEnd(20)} ${p.tagline}`));
+        push(
+          projects.length === 0
+            ? ["// no projects loaded."]
+            : projects.map((p) => `  ${p.name.padEnd(20)} ${p.tagline}`),
+        );
         break;
       case "writing":
         push(["opening /writing/ …"]);

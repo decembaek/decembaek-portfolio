@@ -12,7 +12,6 @@
     "typecheck": "astro check"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.32.1",
     "@astrojs/check": "^0.9.9",
     "@astrojs/cloudflare": "^11.2.0",
     "@astrojs/mdx": "^3.1.9",

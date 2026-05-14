@@ -7,3 +7,6 @@ dist/
 .env.local
 *.log
 .DS_Store
+
+# import staging — design exports from Claude Design, not committed
+design-import/

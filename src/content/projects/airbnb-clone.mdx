@@ -1,0 +1,56 @@
+---
+name: "airbnb-clone"
+tagline: "에어비앤비를 REST API 부터 다시 만들어보는 클론코딩."
+version: "v0.1"
+status: experiment
+year: "2024"
+publishedAt: 2024-06-21
+
+blurb: "REST API 설계 학습용으로 에어비앤비를 클론코딩. React 프론트엔드 + Django 백엔드 분리 구조, 회원가입 / 로그인 / 사진 업로드 / 리뷰 / 방 CRUD 등 핵심 기능 구현."
+role: "개발 · 설계 (100%)"
+stack:
+  - React
+  - Django
+  - Python
+  - JavaScript
+  - Chakra UI
+tags:
+  - python
+  - react
+  - django
+metric: "주요 기능 구현 완료"
+repo: public
+
+heroImage: hero.png
+heroCaption: "fig. 01 — 메인 화면 (이미지 일부는 CloudFlare 비용 이슈로 서버 중지 상태)"
+repos:
+  - { label: frontend, url: "https://github.com/decembaek/airbnb-clone-frontend_js" }
+  - { label: backend,  url: "https://github.com/decembaek/airbnb-clone-backend" }
+
+facts:
+  - { k: "역할", v: "개발 · 설계 (100%)" }
+  - { k: "기간", v: "2024.06.03 — 2024.06.21 (약 3주)" }
+  - { k: "스택", v: "React · Django · Chakra UI" }
+  - { k: "타입", v: "학습 · 클론코딩" }
+  - { k: "상태", v: "주요 기능 구현 완료" }
+
+tldr:
+  - "REST API 설계와 React + Django 분리 구조를 본격적으로 익히기 위한 <b>클론코딩 프로젝트</b>입니다. 에어비앤비의 핵심 흐름 — 방 목록 · 상세 · 리뷰 · 회원가입 — 을 모두 직접 구현했습니다."
+  - "프론트엔드는 React + Chakra UI, 백엔드는 Django + DRF. 인증, 사진 업로드, 평점 등 \"진짜 서비스라면 필요한\" 기능을 빠짐없이 다뤄보는 게 목표였습니다."
+
+shots:
+  - { image: shot-1.png, caption: "fig. 02 — 방 상세 페이지" }
+  - { image: shot-2.png, caption: "fig. 03 — 메인 (방 목록)" }
+  - { image: shot-3.png, caption: "fig. 04 — 리뷰 및 평점 1" }
+  - { image: shot-4.png, caption: "fig. 05 — 리뷰 및 평점 2" }
+  - { image: shot-5.png, caption: "fig. 06 — 회원가입 1" }
+  - { image: shot-6.png, caption: "fig. 07 — 회원가입 2" }
+
+decisions:
+  - type: added
+    title: "REST API 설계 우선"
+    body: "API 스키마를 먼저 그리고 그 위에 React 클라이언트를 얹는 순서로 진행. 프론트엔드 의존성을 백엔드 모양에 끼워맞추지 않도록."
+  - type: added
+    title: "전체 CRUD + 인증 흐름"
+    body: "방 목록 / 방 상세 / 리뷰 작성 / 회원가입 / 로그인 / 사진 업로드 등 실서비스에 필요한 기본 기능을 모두 구현."
+---

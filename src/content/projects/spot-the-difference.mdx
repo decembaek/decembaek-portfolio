@@ -1,0 +1,55 @@
+---
+name: "spot-the-difference"
+tagline: "틀린그림찾기를 컴퓨터 비전으로 자동화하는 토이 프로젝트."
+version: "v0.1"
+status: experiment
+year: "2023"
+publishedAt: 2023-02-02
+
+blurb: "두 이미지를 비교해 OpenCV로 차이를 찾고, PyAutoGUI / Selenium으로 자동 클릭하는 토이 자동화. 누구보다 빠르게 틀린그림을 찾는 \"부정행위\" 챌린지."
+role: "개발 · 설계 · 기획 (100%)"
+stack:
+  - Python
+  - OpenCV
+  - PyAutoGUI
+  - Selenium
+tags:
+  - python
+  - automation
+metric: "데모 영상 공개"
+repo: public
+
+heroImage: hero.jpg
+heroCaption: "fig. 01 — 원본 이미지"
+videos:
+  - { url: "https://youtu.be/Dkyf-SW61Yc", caption: "fig. 02 — 자동 클릭 동작 영상" }
+
+facts:
+  - { k: "역할", v: "개발 · 설계 · 기획 (100%)" }
+  - { k: "기간", v: "2023.02.01 — 2023.02.02 (이틀)" }
+  - { k: "스택", v: "Python · OpenCV · PyAutoGUI · Selenium" }
+  - { k: "타입", v: "토이 · 자동화" }
+  - { k: "데모", v: "YouTube" }
+
+tldr:
+  - "두 이미지를 받아 <b>OpenCV로 차이 영역을 검출</b>하고, PyAutoGUI / Selenium으로 화면에서 해당 위치를 자동 클릭하는 토이 자동화입니다."
+  - "이틀짜리 토이 프로젝트지만 컴퓨터 비전 + 데스크톱 자동화 + 브라우저 자동화의 세 가지 도구가 어떻게 함께 동작하는지 빠르게 체득할 수 있었습니다."
+
+shots:
+  - { image: shot-1.jpg, caption: "fig. 03 — 비교 대상 이미지" }
+  - { image: shot-2.jpg, caption: "fig. 04 — 차이를 찾을 두 번째 이미지" }
+  - { image: shot-3.jpg, caption: "fig. 05 — OpenCV 차이 검출 결과" }
+
+decisions:
+  - type: added
+    title: "OpenCV로 차이 검출"
+    body: "두 이미지를 정렬하고 픽셀 차이 마스크를 만들어 의미 있는 영역만 추려냄."
+  - type: added
+    title: "PyAutoGUI + Selenium 자동 클릭"
+    body: "검출된 좌표를 실제 화면 좌표로 변환해 PyAutoGUI로 클릭. 브라우저 게임이면 Selenium으로 DOM 좌표 활용."
+
+retro:
+  good:
+    - "누구보다 빠르게 틀린그림을 찾을 수 있게 됨."
+    - "자동화 도구들의 조합에 대한 이해도가 한 단계 올라감 — 이후 더 큰 자동화 프로젝트(SocFlow 등)의 디딤돌."
+---
