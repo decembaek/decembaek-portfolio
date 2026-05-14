@@ -5,6 +5,14 @@ main = "./dist/_worker.js/index.js"
 
 assets = { directory = "./dist", binding = "ASSETS" }
 
+# Custom domain. Requires decembaek.com to already be a Cloudflare zone (i.e.
+# DNS managed by Cloudflare). On `wrangler deploy` the platform auto-creates
+# the A/AAAA records pointing at this Worker — no manual DNS step needed.
+routes = [
+  { pattern = "decembaek.com", custom_domain = true },
+  { pattern = "www.decembaek.com", custom_domain = true },
+]
+
 # Workers AI binding — no API key needed, uses the CF account's quota.
 # Free tier: ~10k neurons/day, plenty for a personal chatbot.
 [ai]
