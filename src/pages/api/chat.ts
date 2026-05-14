@@ -47,7 +47,10 @@ export async function POST(context: APIContext) {
   const upstream = (await ai.run(MODEL, {
     messages: [{ role: "system", content: system }, ...history],
     stream: true,
-    max_tokens: 256,
+    // gpt-oss-120b counts reasoning tokens against this budget too, so a
+    // tight cap (256) was clipping answers mid-sentence. 768 leaves comfortable
+    // room for short visible replies plus the model's silent reasoning.
+    max_tokens: 768,
   })) as unknown as ReadableStream<Uint8Array>;
 
   // Workers AI streams SSE. Different model families use different event

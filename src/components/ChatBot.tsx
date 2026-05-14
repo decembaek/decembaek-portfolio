@@ -6,7 +6,6 @@ const SUGGESTIONS = [
   "요즘 어떤 프로젝트 만들고 있어요?",
   "AI 에이전트는 어떤 거 작업 중?",
   "스택이 어떻게 돼요?",
-  "이직 / 새 역할 열려 있나요?",
 ];
 
 export default function ChatBot() {
