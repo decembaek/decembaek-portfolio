@@ -1,0 +1,7 @@
+# Tell Wrangler not to upload the Worker bundle as static assets.
+# Astro's Cloudflare adapter writes the Worker to dist/_worker.js/, which sits
+# next to the static files we DO want to serve. Without this file, `wrangler
+# deploy` errors out saying it could expose server-side code.
+_worker.js
+# Pages-style routes file isn't used in Workers Assets mode.
+_routes.json
