@@ -1,0 +1,20 @@
+---
+// Thin Astro wrapper that loads the projects collection at build time and
+// passes a lightweight slug/name map to the React ChatBot island. Lets the
+// chatbot render proper "관련 프로젝트" cards under bot replies (driven by
+// `[[refs: …]]` markers the LLM emits) without the React side needing to
+// fetch or re-import the MDX files.
+import { getCollection } from "astro:content";
+import ChatBot from "./ChatBot";
+
+const all = await getCollection("projects", ({ data }) => !data.draft);
+const projects = all
+  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
+  .map((p) => ({
+    slug: p.slug,
+    name: p.data.name,
+    tagline: p.data.tagline,
+    live: p.data.live?.url,
+  }));
+---
+<ChatBot client:idle projects={projects} />

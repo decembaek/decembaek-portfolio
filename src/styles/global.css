@@ -1376,3 +1376,51 @@ kbd {
 .chat-msg__link:hover {
   border-bottom-color: var(--accent);
 }
+
+/* ------------ chat: project reference cards ------------ */
+.chat-msg__refs {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--rule);
+}
+.chat-msg__refs-label {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+  margin-bottom: 2px;
+}
+.chat-msg__ref {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 12px;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  text-decoration: none;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--ink-2);
+  transition: all .15s;
+  border-bottom-width: 1px;
+}
+.chat-msg__ref:hover {
+  border-color: var(--accent);
+  background: var(--bg-elev);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+.chat-msg__ref-name { font-weight: 500; }
+.chat-msg__ref-arrow {
+  color: var(--ink-3);
+  font-size: 12px;
+  transition: transform .15s, color .15s;
+}
+.chat-msg__ref:hover .chat-msg__ref-arrow {
+  color: var(--accent);
+  transform: translateX(3px);
+}

@@ -2,19 +2,32 @@ import { Fragment, useEffect, useRef, useState } from "react";
 
 type Msg = { role: "you" | "bot"; text: string };
 
+export type ChatProject = {
+  slug: string;
+  name: string;
+  tagline: string;
+  live?: string;
+};
+
+interface Props {
+  projects?: ChatProject[];
+}
+
 const SUGGESTIONS = [
   "요즘 어떤 프로젝트 만들고 있어요?",
   "AI 에이전트는 어떤 거 작업 중?",
   "스택이 어떻게 돼요?",
 ];
 
-// Auto-link URLs inside bot replies. We match:
+// Auto-link URLs inside bot replies — fallback for replies that ignore the
+// [[refs:…]] marker convention. We match:
 //   - external https? URLs
 //   - same-origin paths like /projects/<slug>/ or /writing/...
-// Trailing punctuation (. , ; : ! ? ) ]) is stripped from the matched URL
-// and pushed back as text so sentences read naturally.
 const URL_RE = /(https?:\/\/\S+|\/(?:projects|writing|now|hi)\/?[a-z0-9-]*\/?)/g;
 const TRAILING_PUNCT = /[.,;:!?)\]"']+$/;
+
+// "[[refs: a, b, c]]" — only matched at the end of a bot reply.
+const REFS_RE = /\n?\s*\[\[refs:\s*([^\]]+)\]\]\s*$/;
 
 type Part = { kind: "text" | "link"; value: string; href?: string };
 
@@ -42,10 +55,39 @@ function splitWithLinks(text: string): Part[] {
   return parts;
 }
 
-function MessageBody({ text, role }: { text: string; role: "you" | "bot" }) {
-  // Don't auto-link the user's own messages — only the bot's.
+function parseRefs(text: string, projects: ChatProject[]) {
+  const m = text.match(REFS_RE);
+  if (!m) return { body: text, refs: [] as ChatProject[] };
+  const slugs = m[1]
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+  // Preserve order, drop unknowns, dedupe.
+  const seen = new Set<string>();
+  const refs: ChatProject[] = [];
+  for (const s of slugs) {
+    if (seen.has(s)) continue;
+    const hit = projects.find((p) => p.slug === s);
+    if (hit) {
+      seen.add(s);
+      refs.push(hit);
+    }
+  }
+  return { body: text.replace(REFS_RE, "").trim(), refs };
+}
+
+function MessageBody({
+  text,
+  role,
+  projects,
+}: {
+  text: string;
+  role: "you" | "bot";
+  projects: ChatProject[];
+}) {
   if (role === "you") return <>{text}</>;
-  const parts = splitWithLinks(text);
+  const { body, refs } = parseRefs(text, projects);
+  const parts = splitWithLinks(body);
   return (
     <>
       {parts.map((p, i) => {
@@ -63,11 +105,22 @@ function MessageBody({ text, role }: { text: string; role: "you" | "bot" }) {
           </a>
         );
       })}
+      {refs.length > 0 && (
+        <div className="chat-msg__refs">
+          <span className="chat-msg__refs-label">↳ 관련 프로젝트</span>
+          {refs.map((r) => (
+            <a key={r.slug} className="chat-msg__ref" href={`/projects/${r.slug}/`}>
+              <span className="chat-msg__ref-name">{r.name}</span>
+              <span className="chat-msg__ref-arrow" aria-hidden="true">→</span>
+            </a>
+          ))}
+        </div>
+      )}
     </>
   );
 }
 
-export default function ChatBot() {
+export default function ChatBot({ projects = [] }: Props) {
   const [open, setOpen] = useState(false);
   const [msgs, setMsgs] = useState<Msg[]>([
     {
@@ -173,7 +226,7 @@ export default function ChatBot() {
                 <span className="chat-msg__who">{m.role === "you" ? "~ ❯" : "➜"}</span>
                 <span className="chat-msg__text">
                   {m.text ? (
-                    <MessageBody text={m.text} role={m.role} />
+                    <MessageBody text={m.text} role={m.role} projects={projects} />
                   ) : busy && i === msgs.length - 1 ? (
                     <span className="chat-msg__typing">
                       <i /><i /><i />
