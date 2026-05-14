@@ -37,9 +37,13 @@ const items: BlogItem[] = all
             <span class="section-head__file">./writing/</span>
             <span class="section-head__rule"></span>
           </div>
-          <p class="section-head__sub">// essays, mostly written on the subway. ~1/month.</p>
+          <p class="section-head__sub">
+            {items.length === 0
+              ? "// 아직 글이 없어요. 준비되는 대로 하나씩 올라옵니다."
+              : "// essays, mostly written on the subway. ~1/month."}
+          </p>
         </header>
-        <Search client:idle />
+        {items.length > 0 && <Search client:idle />}
         <BlogList client:load posts={items} />
       </section>
     </main>

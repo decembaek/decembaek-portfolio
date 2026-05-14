@@ -24,6 +24,17 @@ export default function BlogList({ posts }: Props) {
 
   const visible = filter === "all" ? posts : posts.filter((p) => p.tags.includes(filter));
 
+  if (posts.length === 0) {
+    return (
+      <div className="blog-empty">
+        <p>// 아직 글이 없어요. 곧 채워집니다.</p>
+        <p className="blog-empty__sub">
+          궁금하신 점은 우측 하단 <em>decembaek-bot</em>에게 물어보세요.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="blog-head">

@@ -25,7 +25,8 @@
       "Bash(kill 4842)",
       "Bash(curl -s http://localhost:4321/)",
       "Bash(npm ls *)",
-      "Bash(pkill -f \"astro dev\")"
+      "Bash(pkill -f \"astro dev\")",
+      "Bash(git ls-remote *)"
     ]
   }
 }
